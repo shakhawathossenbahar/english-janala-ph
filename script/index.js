@@ -5,6 +5,15 @@ const loadLessons = () => {
 }
 
 
+const removeActive = () => {
+   const lessonButtons = document.querySelectorAll(".lesson-btn");
+   lessonButtons.forEach(btn => {
+      btn.classList.remove("active");
+   });
+}
+
+
+
 const displayLesson = (lessons) => {
    // 1. get the container and clear the container
    const levelContainer = document.getElementById("level-container");
@@ -16,7 +25,7 @@ const displayLesson = (lessons) => {
       // 3. create element
       const btnDiv = document.createElement("div");
       btnDiv.innerHTML = `
-            <button onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary">
+            <button id="lesson-btn-${lesson.level_no}" onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary lesson-btn">
             <i class="fa-solid fa-book-open"></i>Lesson-${lesson.level_no}</button>
          `
 
@@ -30,7 +39,12 @@ const loadLevelWord = (id) => {
    const url = `https://openapi.programming-hero.com/api/level/${id}`;
    fetch(url)
       .then(res => res.json())
-      .then(output => displayLevelWord(output.data));
+      .then(output => {
+         removeActive();  // remove all active class
+         const clickBtn = document.getElementById(`lesson-btn-${id}`);
+         clickBtn.classList.add("active");  // add active class
+         displayLevelWord(output.data);
+      });
 }
 
 
@@ -63,12 +77,12 @@ const displayLevelWord = (words) => {
    words.forEach(word => {
       const card = document.createElement("div");
       card.innerHTML = `
-         <div class="bg-white rounded-xl shadow-sm text-center py-10 px-5 space-y-5">
+      <div class="bg-white rounded-xl shadow-sm text-center py-10 px-5 space-y-5">
       <h2 class="font-bold text-3xl">${word.word ? word.word : "শব্দ পাওয়া যায় নি"}</h2>
       <p class="font-semibold text-">Meaning / Pronounciation</p>
       <div class="text-3xl font-medium font-bangla text-[18181B]">${word.meaning ? word.meaning : "শব্দ পাওয়া যায় নি"} / ${word.pronunciation ? word.pronunciation : "শব্দ পাওয়া যায় নি"}</div>
       <div class="flex justify-between items-center">
-         <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF50]"><i class="fa-solid fa-circle-info"></i></button>
+         <button onclick="my_modal_5.showModal()" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF50]"><i class="fa-solid fa-circle-info"></i></button>
          <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF50]"><i class="fa-solid fa-volume-high"></i></button>
       </div>
    </div>
